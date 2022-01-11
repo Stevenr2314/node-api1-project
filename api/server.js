@@ -35,7 +35,7 @@ server.get('/api/users/:id', (req,res) => {
             if(!resp) {
                 res.status(404).json({ message: "The user with the specified ID does not exist" })
             } else {
-                res.status(200).json({data: resp})
+                res.status(200).json(resp)
             }
             
         })
@@ -50,7 +50,7 @@ server.delete('/api/users/:id', (req,res) => {
                 res.status(404).json({ message: "The user with the specified ID does not exist" })
             }
             else{
-                res.status(204).json({message: "User successfully deleted"})
+                res.status(200).json(resp)
             }
         })
         .catch(err => res.status(500).json({ message: "The user could not be removed" })
@@ -59,10 +59,12 @@ server.delete('/api/users/:id', (req,res) => {
 })
 
 server.put('/api/users/:id', (req,res) => {
-    if (!req.body.name || !req.body.bio) {
+    const changes = req.body
+    const id = req.params.id
+    if (!changes.name || !changes.bio) {
         res.status(400).json({ message: "Please provide name and bio for the user" })
     } else {
-        User.update(req.body)
+        User.update(id, changes)
             .then(resp => {
                 if(!resp){
                     res.status(404).json({ message: "The user with the specified ID does not exist" })
